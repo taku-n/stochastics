@@ -85,8 +85,7 @@ void stochastics(const double &H[], const double &L[], const double &C[], const 
 void k(const double &H[], const double &L[], const double &C[], const int TOTAL, const int BEGIN)
 {
 	for (int i = BEGIN; i < TOTAL; i++) {
-		k[i] = ((C[i] - lowest(L, PERIOD_K, i))
-				/ (highest(H, PERIOD_K, i) - lowest(L, PERIOD_K, i))) * 100.0;
+		k[i] = ((C[i] - lowest(L, i)) / (highest(H, i) - lowest(L, i))) * 100.0;
 	}
 }
 
@@ -96,11 +95,11 @@ void d(const double &H[], const double &L[], const double &C[], const int TOTAL,
 		double numer = 0.0, denom = 0.0;
 		for (int j = i - (PERIOD_D - 1); j <= i; j++) {
 			if (j < 0) {
-				numer += C[0] - lowest(L, PERIOD_K, 0);
-				denom += highest(H, PERIOD_K, 0) - lowest(L, PERIOD_K, 0);
+				numer += C[0] - lowest(L, 0);
+				denom += highest(H, 0) - lowest(L, 0);
 			} else {
-				numer += C[j] - lowest(L, PERIOD_K, j);
-				denom += highest(H, PERIOD_K, j) - lowest(L, PERIOD_K, j);
+				numer += C[j] - lowest(L, j);
+				denom += highest(H, j) - lowest(L, j);
 			}
 		}
 		d[i] = (numer / denom) * 100.0;
@@ -128,11 +127,11 @@ void d_sd(const double &H[], const double &L[], const double &C[], const int TOT
 	sd(TOTAL, BEGIN);
 }
 
-double lowest(const double &L[], const int PERIOD, const int I)
+double lowest(const double &L[], const int I)
 {
 	double lowest = DBL_MAX;
 
-	for (int i = I - (PERIOD - 1); i <= I; i++) {
+	for (int i = I - (PERIOD_K - 1); i <= I; i++) {
 		if (i < 0) {
 			if (L[0] < lowest) {
 				lowest = L[0];
@@ -147,11 +146,11 @@ double lowest(const double &L[], const int PERIOD, const int I)
 	return lowest;
 }
 
-double highest(const double &H[], const int PERIOD, const int I)
+double highest(const double &H[], const int I)
 {
 	double highest = 0.0;
 
-	for (int i = I - (PERIOD - 1); i <= I; i++) {
+	for (int i = I - (PERIOD_K - 1); i <= I; i++) {
 		if (i < 0) {
 			if (H[0] > highest) {
 				highest = H[0];
