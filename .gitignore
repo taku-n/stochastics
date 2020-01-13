@@ -1,3 +1,6 @@
+*.swp
+*.ex5
+
 # Prerequisites
 *.d
 
