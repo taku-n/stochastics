@@ -47,6 +47,7 @@ int OnInit()
 			"K(" + IntegerToString(PERIOD_K) + "), "
 			+ "D(" + IntegerToString(PERIOD_D) + "), "
 			+ "SD(" + IntegerToString(PERIOD_SD) + ")");
+	IndicatorSetInteger(INDICATOR_DIGITS, 3);
 
 	return INIT_SUCCEEDED;
 }
@@ -85,7 +86,13 @@ void stochastics(const double &H[], const double &L[], const double &C[], const 
 void k(const double &H[], const double &L[], const double &C[], const int TOTAL, const int BEGIN)
 {
 	for (int i = BEGIN; i < TOTAL; i++) {
-		k[i] = ((C[i] - lowest(L, i)) / (highest(H, i) - lowest(L, i))) * 100.0;
+		double lowest = lowest(L, i);
+		double highest = highest(H, i);
+		if (highest - lowest == 0.0) {
+			k[i] = 50.0;
+		} else {
+			k[i] = ((C[i] - lowest) / (highest - lowest)) * 100.0;
+		}
 	}
 }
 
@@ -102,7 +109,12 @@ void d(const double &H[], const double &L[], const double &C[], const int TOTAL,
 				denom += highest(H, j) - lowest(L, j);
 			}
 		}
-		d[i] = (numer / denom) * 100.0;
+
+		if (denom == 0.0) {
+			d[i] = 50.0;
+		} else {
+			d[i] = (numer / denom) * 100.0;
+		}
 	}
 }
 
